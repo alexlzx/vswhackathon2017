@@ -5,6 +5,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 
 import requests
+import json
 
 
 app = Flask(__name__) # create the application instance :)
@@ -50,11 +51,11 @@ def close_db(error):
 
 
 @app.route('/')
-def show_entries():
-	db = get_db()
-	cur = db.execute('select title, text from entries order by id desc')
-	entries = cur.fetchall()
-	return render_template('show_entries.html', entries=entries)
+def welcome():
+    if not session.get('logged_in'):
+	   return redirect(url_for('login'))
+    else:
+        return redirect(url_for('show_routes'))
 
 
 @app.route('/add', methods=['POST'])
@@ -71,26 +72,29 @@ def add_entry():
 
 @app.route('/route')
 def show_routes():
+	return render_template('show_routes.html')
 
-	r = requests.get('http://google.com')
-	return render_template('show_routes.html', context=r.text)
 
-@app.route('/route/addroute', methods=['POST'])
+@app.route('/route/add', methods=['POST'])
 def add_route():
 	if not session.get('logged_in'):
 		abort(401)
-	db = get_db()
-	db.execute('insert into routes (address) values (?)',
-		[request.form['address']])
-	db.commit()
-	flash('new route was added')
-	return redirect(url_for('show_routes'));
+	print request.form['title']
+	return redirect(url_for('show_routes'))
 
+#simulate QR code
+@app.route('/qrcode')
+def show_qrcode():
+    cur_location = get_location()
+    print cur_location
+    return render_template('qrcode.html')
 
+#helper function to get current geolocation
 
-
-
-
+def get_location():
+    r = requests.get('http://freegeoip.net/json')
+    j = json.loads(r.text)
+    return [j['latitude'], j['longitude']]
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -104,7 +108,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('show_entries'))
+            return redirect(url_for('show_routes'))
     return render_template('login.html', error=error)
 
 

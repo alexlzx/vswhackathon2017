@@ -1,11 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
 	  {% if session.logged_in %}
-	  <div class="row align-items-center">
-    <form action="{{ url_for('add_route') }}" method=post class=add-route>
+    <form action="{{ url_for('add_route')}}" method=post class=add-route>
       <dl>
         <dt>Where do you want to go?:
-        <dd><input class="type=text size=30 name=title>
+        <dd><input type=text size=30 name=title>
         <dd><input type=submit value='Get Route'>
 
 
