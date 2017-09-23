@@ -1,0 +1,8 @@
+graft flaskr/templates
+graft flaskr/static
+include flaskr/schema.sql
+
+flaskr/__init__.py
+
+from .flaskr import app
+
