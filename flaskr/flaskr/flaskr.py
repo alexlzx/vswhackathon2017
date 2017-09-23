@@ -4,6 +4,8 @@ import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 
+import requests
+
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -65,6 +67,31 @@ def add_entry():
 	db.commit()
 	flash('New entry was succesfully posted')
 	return redirect(url_for('show_entries'))
+
+
+@app.route('/route')
+def show_routes():
+
+	r = requests.get('http://google.com')
+	return render_template('show_routes.html', context=r.text)
+
+@app.route('/route/addroute', methods=['POST'])
+def add_route():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	db.execute('insert into routes (address) values (?)',
+		[request.form['address']])
+	db.commit()
+	flash('new route was added')
+	return redirect(url_for('show_routes'));
+
+
+
+
+
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

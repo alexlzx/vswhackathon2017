@@ -5,3 +5,9 @@ create table entries (
 	title text not null,
 	'text' text not null
 );
+
+create table routes (
+	id integer primary key autoincrement,
+	address text not null
+);
+
