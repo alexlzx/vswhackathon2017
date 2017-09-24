@@ -1,0 +1,108 @@
+<head>
+  <% include ../partials/header.ejs %>
+
+		<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+        <footer class="footer">
+      <div class="container">
+
+      	<div class="row">
+      		<div class="col-xs-12">
+      			 <h5>Your Estimated Arrival Time: 12:59PM</h5>
+      			 <a href="/confirmed"><button type="submit" class="shadow btn btn-primary"><h4>Confirm Bus Request</h4></button></a>
+      		</div>
+      </div>
+    </footer>
+    <script>
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          disableDefaultUI: true,
+        	scaleControl: true, // allow users to zoom the Google Map
+
+        });
+        directionsDisplay.setMap(map);
+        calculateAndDisplayRoute(directionsService, directionsDisplay)
+
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+      	              var position = [49.2834511, -123.1152548];
+    	var position2 = [49.2669339, -123.0706061];
+    	var position3 = [49.2653656,-123.0850444];
+    	var position4 = [49.2615989,-123.0896471];
+    	var position5 = [49.2586231,-123.0895505];
+    	var position6 = [49.2604926,-123.0946199];
+    	var latLng = new google.maps.LatLng(position[0], position[1]);
+    	var latLng2 = new google.maps.LatLng(position2[0], position2[1]);
+    	var latLng3 = new google.maps.LatLng(position3[0], position3[1]);
+    	var latLng4 = new google.maps.LatLng(position4[0], position4[1]);
+    	var latLng5 = new google.maps.LatLng(position5[0], position5[1]);
+    	var latLng6 = new google.maps.LatLng(position6[0], position6[1]);
+        directionsService.route({
+          origin: latLng,
+          destination: latLng2,
+           waypoints: [
+			    {
+			      location: latLng3,
+			      stopover: false
+			    },{
+			      location: latLng4,
+			      stopover: true
+			    },
+			    {
+			      location: latLng5,
+			      stopover: true
+			    },
+			    {
+			      location: latLng6,
+			      stopover: true
+			    }],
+          travelMode: 'DRIVING',
+          optimizeWaypoints: true,
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4WkWJfKonzJma63X-0m8CTpZQ5VHgonE
+&callback=initMap">
+    </script>
+  </body>
+</html>
